@@ -1,5 +1,6 @@
 
 
+
 import { GoogleGenAI, Modality, Type } from "@google/genai";
 import type { ClothingInfo, ImageFile } from '../types';
 
@@ -10,12 +11,11 @@ const getAi = (): GoogleGenAI => {
     return ai;
   }
 
-  // FIX: Use process.env.API_KEY as per the coding guidelines.
+  // Fix: Per the Gemini API guidelines, the API key must be sourced from process.env.API_KEY.
   const apiKey = process.env.API_KEY;
 
   if (!apiKey) {
-    // Este erro será capturado pelo ApiKeyGuard.
-    // FIX: Update error message to reference API_KEY.
+    // This error will be caught by ApiKeyGuard.
     throw new Error("A chave da API do Google Gemini (API_KEY) não está configurada.");
   }
 
