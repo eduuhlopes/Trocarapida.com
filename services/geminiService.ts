@@ -1,3 +1,4 @@
+
 import { GoogleGenAI, Modality, Type } from "@google/genai";
 import type { ClothingInfo, ImageFile } from '../types';
 
@@ -8,13 +9,16 @@ const getAi = (): GoogleGenAI => {
     return ai;
   }
 
-  // FIX: Switched from import.meta.env.VITE_API_KEY to process.env.API_KEY to comply with Gemini API guidelines and resolve the TypeScript error.
-  // Also updated the error message and initialization logic.
-  if (!process.env.API_KEY) {
-    throw new Error("A chave da API do Google Gemini (API_KEY) não está configurada. Por favor, adicione-a nas variáveis de ambiente do seu projeto na Vercel.");
+  // FIX: Changed to process.env.API_KEY to align with guidelines and fix typing error.
+  const apiKey = process.env.API_KEY;
+
+  if (!apiKey) {
+    // This error will be caught by ApiKeyGuard, but it's good practice to have it here too.
+    // FIX: Updated error message to reference API_KEY.
+    throw new Error("A chave da API do Google Gemini (API_KEY) não está configurada.");
   }
 
-  ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  ai = new GoogleGenAI({ apiKey: apiKey });
   return ai;
 };
 
