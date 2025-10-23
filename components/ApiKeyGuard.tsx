@@ -1,8 +1,6 @@
-
-
 import React from 'react';
 
-// Fix: Per the Gemini API guidelines, the API key must be sourced from process.env.API_KEY.
+// Fix: Aderindo às diretrizes do SDK @google/genai, que exigem o uso de process.env.API_KEY.
 const API_KEY = process.env.API_KEY;
 
 interface ApiKeyGuardProps {
@@ -29,7 +27,7 @@ const ApiKeyGuard: React.FC<ApiKeyGuardProps> = ({ children }) => {
             <ol className="list-decimal list-inside mt-2 space-y-2 text-gray-700">
               <li>Acesse o painel do seu projeto na Vercel.</li>
               <li>Vá para a aba <strong>Settings</strong> e depois <strong>Environment Variables</strong>.</li>
-              <li>Adicione uma variável com o nome <strong className="text-red-900">exatamente</strong> <code className="bg-red-200 text-red-900 font-mono p-1 rounded-md">API_KEY</code>.</li>
+              <li>Adicione (ou renomeie) uma variável com o nome <strong className="text-red-900">exatamente</strong> <code className="bg-red-200 text-red-900 font-mono p-1 rounded-md">API_KEY</code>.</li>
               <li>Cole o valor da sua chave da API no campo de valor.</li>
               <li>Salve e faça um novo "redeploy" da sua aplicação (em Deploys, selecione o último e clique em "Redeploy").</li>
             </ol>
