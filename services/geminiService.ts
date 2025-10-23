@@ -163,3 +163,33 @@ export const addAccessory = async (
     throw new Error("Não foi possível adicionar o acessório. Tente novamente.");
   }
 };
+
+export const getStylistAdvice = async (
+  imageBase64: string,
+  userPrompt: string
+): Promise<string> => {
+  try {
+    const model = 'gemini-2.5-flash';
+    const prompt = `Você é um estilista de moda amigável e prestativo, chamado TrocaRápida AI. Com base na imagem de uma pessoa usando uma roupa, responda à seguinte pergunta do usuário. Seja conciso, encorajador e dê conselhos práticos de moda.
+
+Pergunta do usuário: "${userPrompt}"`;
+    
+    const imagePart = {
+      inlineData: {
+        data: imageBase64,
+        mimeType: 'image/png',
+      },
+    };
+
+    const response = await ai.models.generateContent({
+      model,
+      contents: { parts: [imagePart, { text: prompt }] },
+    });
+
+    return response.text.trim();
+
+  } catch (error) {
+    console.error("Erro ao obter conselho do estilista:", error);
+    throw new Error("Não foi possível obter uma resposta do estilista. Tente novamente.");
+  }
+};

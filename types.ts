@@ -25,3 +25,8 @@ export interface ClothingPart {
 export interface GeneratedImage {
   url: string;
 }
+
+export interface ChatMessage {
+  role: 'user' | 'model';
+  content: string;
+}

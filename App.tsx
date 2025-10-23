@@ -133,18 +133,19 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen text-gray-800 flex flex-col font-sans relative isolate">
        <style>{`
-        @keyframes pulse-ready {
-          0%, 100% {
-            transform: scale(1);
-            box-shadow: 0 0 0 0 rgba(31, 41, 55, 0.3);
-          }
-          50% {
-            transform: scale(1.02);
-            box-shadow: 0 0 0 10px rgba(31, 41, 55, 0);
-          }
+        @keyframes shimmer-effect {
+          0% { transform: translateX(-150%) skewX(-25deg); }
+          100% { transform: translateX(150%) skewX(-25deg); }
         }
-        .animate-pulse-ready {
-          animation: pulse-ready 2s infinite;
+        .animate-shimmer::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 50%;
+          height: 100%;
+          background: linear-gradient(110deg, rgba(255, 255, 255, 0) 40%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 60%);
+          animation: shimmer-effect 3s infinite linear;
         }
       `}</style>
        <div className="absolute inset-x-0 top-0 -z-10 transform-gpu overflow-hidden blur-3xl" aria-hidden="true">
@@ -194,7 +195,7 @@ const App: React.FC = () => {
               <button
                 onClick={handleGenerateClick}
                 disabled={isButtonEnabled}
-                className={`w-full bg-gray-900 hover:bg-gray-700 text-white font-bold py-4 px-4 rounded-lg transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-lg text-lg ${!isButtonEnabled ? 'animate-pulse-ready' : ''}`}
+                className={`relative overflow-hidden w-full bg-gray-900 hover:bg-gray-700 text-white font-bold py-4 px-4 rounded-lg transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-lg text-lg ${!isButtonEnabled ? 'animate-shimmer' : ''}`}
               >
                 {isLoading ? (
                   <>
