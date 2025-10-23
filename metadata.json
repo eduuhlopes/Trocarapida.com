@@ -1,0 +1,5 @@
+{
+  "name": "Provador Virtual com IA",
+  "description": "Um aplicativo de provador virtual que permite aos usuários experimentar roupas em suas próprias fotos usando IA. Carregue uma foto sua e uma foto da roupa para ver o resultado.",
+  "requestFramePermissions": []
+}
