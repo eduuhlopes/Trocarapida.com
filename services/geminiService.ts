@@ -3,11 +3,21 @@ import type { ClothingInfo, ImageFile } from '../types';
 
 const API_KEY = process.env.API_KEY;
 
-if (!API_KEY) {
-  console.error("API_KEY is not set in environment variables.");
-}
+let ai: GoogleGenAI | null = null;
 
-const ai = new GoogleGenAI({ apiKey: API_KEY });
+const getAi = (): GoogleGenAI => {
+  if (ai) {
+    return ai;
+  }
+
+  if (!API_KEY) {
+    throw new Error("A chave da API do Google Gemini (API_KEY) não está configurada. Por favor, adicione-a nas variáveis de ambiente do seu projeto na Vercel.");
+  }
+
+  ai = new GoogleGenAI({ apiKey: API_KEY });
+  return ai;
+};
+
 
 const fileToGenerativePart = (imageFile: ImageFile) => {
   return {
@@ -38,6 +48,7 @@ export const generateTryOnImage = async (
   pose: string
 ): Promise<string> => {
   try {
+    const gemini = getAi();
     const model = 'gemini-2.5-flash-image';
     
     const poseInstruction = getPoseInstruction(pose);
@@ -52,7 +63,7 @@ export const generateTryOnImage = async (
     const personImagePart = fileToGenerativePart(personImage);
     const clothingImagePart = fileToGenerativePart(clothingImage);
     
-    const response = await ai.models.generateContent({
+    const response = await gemini.models.generateContent({
       model: model,
       contents: {
         parts: [personImagePart, clothingImagePart, { text: prompt }],
@@ -90,12 +101,13 @@ export const generateTryOnImage = async (
 
 export const describeClothing = async (clothingImage: ImageFile): Promise<ClothingInfo> => {
   try {
+    const gemini = getAi();
     const model = 'gemini-2.5-flash';
     const prompt = 'Analise a imagem desta peça de roupa. Retorne um objeto JSON com três chaves: "name" (o nome ou tipo da peça, ex: "Vestido Azul Midi com Babados"), "description" (uma descrição curta e atrativa da peça), e "occasions" (um texto breve sugerindo onde usá-la).';
     
     const imagePart = fileToGenerativePart(clothingImage);
 
-    const response = await ai.models.generateContent({
+    const response = await gemini.models.generateContent({
       model,
       contents: { parts: [imagePart, { text: prompt }] },
       config: {
@@ -130,6 +142,7 @@ export const addAccessory = async (
   accessoryImage: ImageFile
 ): Promise<string> => {
   try {
+    const gemini = getAi();
     const model = 'gemini-2.5-flash-image';
     const prompt = `Esta é uma tarefa de edição de imagem. Pegue a pessoa na primeira imagem e adicione o acessório da segunda imagem nela de forma realista. O fundo deve permanecer branco. Mantenha a pessoa e a roupa original intactas, apenas adicionando o acessório.`;
 
@@ -141,7 +154,7 @@ export const addAccessory = async (
     };
     const accessoryImagePart = fileToGenerativePart(accessoryImage);
 
-    const response = await ai.models.generateContent({
+    const response = await gemini.models.generateContent({
       model,
       contents: { parts: [currentImagePart, accessoryImagePart, { text: prompt }] },
       config: {
@@ -169,6 +182,7 @@ export const getStylistAdvice = async (
   userPrompt: string
 ): Promise<string> => {
   try {
+    const gemini = getAi();
     const model = 'gemini-2.5-flash';
     const prompt = `Você é um estilista de moda amigável e prestativo, chamado TrocaRápida AI. Com base na imagem de uma pessoa usando uma roupa, responda à seguinte pergunta do usuário. Seja conciso, encorajador e dê conselhos práticos de moda.
 
@@ -181,7 +195,7 @@ Pergunta do usuário: "${userPrompt}"`;
       },
     };
 
-    const response = await ai.models.generateContent({
+    const response = await gemini.models.generateContent({
       model,
       contents: { parts: [imagePart, { text: prompt }] },
     });
